@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MockPlugin")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0eb3004b69c981c2da0b2b7eed22cb1ce63eda83")]
 [assembly: System.Reflection.AssemblyProductAttribute("MockPlugin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MockPlugin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

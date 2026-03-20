@@ -3,6 +3,7 @@
 $bg-app:        #1a1a2e;
 $bg-surface:    #16213e;
 $bg-panel:      #0f3460;
+$bg-result:     #0a2240;
 $accent:        #4299e1;
 $accent-hover:  #3182ce;
 $text-primary:  #ffffff;
@@ -212,3 +213,17 @@ body, html {
     transform: translateX(20px);
   }
 }
+
+/* ── ngx-json-viewer theme overrides ── */
+ngx-json-viewer {
+  .segment-type-string  .segment-value { color: #68d391; }  // green
+  .segment-type-number  .segment-value { color: #f6ad55; }  // orange
+  .segment-type-boolean .segment-value { color: #76e4f7; }  // cyan
+  .segment-type-null    .segment-value { color: #fc8181; }  // red
+  .segment-key                         { color: #a0aec0; }  // muted white
+  .segment-separator                   { color: #4a5568; }
+  .toggler                             { color: #4299e1; }  // accent blue
+  .segment                             { font-size: 13px; line-height: 26px; }
+  .segment:hover                       { background: rgba(255,255,255,0.04); }
+}
+

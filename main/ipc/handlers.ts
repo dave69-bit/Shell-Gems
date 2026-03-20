@@ -1,86 +1,76 @@
 import { ipcMain } from 'electron';
 import { scanPlugins } from './pluginScanner';
-import { getPluginParams, updatePluginParams } from './pluginLoader';
+import { getPluginFunctions, getPluginParams, executePlugin } from './pluginLoader';
 
 export function registerIpcHandlers() {
+
+  // ── plugins:list ──────────────────────────────────────────────────────────
   ipcMain.handle('plugins:list', async () => {
     try {
       const plugins = scanPlugins();
-      
-      // Try to load params for each to verify they are active
-      // In a real scenario we might do this lazily or in parallel
+
+      // Health-check: try GetFunctions to verify the DLL is loadable
       for (const p of plugins) {
-          try {
-              // Just pinging it to see if it loads
-              await getPluginParams(p.id);
-              p.status = 'active';
-          } catch (e: any) {
-              p.status = 'error';
-              p.error = e.message || 'Failed to initialize plugin';
-          }
+        try {
+          await getPluginFunctions(p.id);
+          p.status = 'active';
+        } catch (e: any) {
+          p.status = 'error';
+          p.error  = e.message || 'Failed to initialize plugin';
+        }
       }
 
-      return {
-        success: true,
-        plugins
-      };
+      return { success: true, plugins };
     } catch (error: any) {
-      return {
-        success: false,
-        error: error.message || 'Could not scan plugins directory'
-      };
+      return { success: false, error: error.message || 'Could not scan plugins directory' };
     }
   });
 
-  ipcMain.handle('plugins:params', async (_event, payload: { pluginId: string }) => {
+  // ── plugins:functions ─────────────────────────────────────────────────────
+  ipcMain.handle('plugins:functions', async (_event, payload: { pluginId: string }) => {
     try {
       const { pluginId } = payload;
-      const params = await getPluginParams(pluginId);
-      
-      // Parse JSON from C# plugin string result if needed, assuming C# returns object/JSON string
-      // Depends on implementation of Mock DLL. If mock dll returns object array, just return.
-      const parsedParams = typeof params === 'string' ? JSON.parse(params) : params;
-
-      return {
-        success: true,
-        pluginId,
-        params: parsedParams
-      };
+      const raw = await getPluginFunctions(pluginId);
+      const functions = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      return { success: true, pluginId, functions };
     } catch (error: any) {
       return {
         success: false,
-        error: `Plugin ${payload?.pluginId} could not be loaded: ${error.message}`
+        error: `Plugin '${payload?.pluginId}' could not be loaded: ${error.message}`
       };
     }
   });
 
-  ipcMain.handle('plugins:update', async (_event, payload: { pluginId: string, params: any }) => {
+  // ── plugins:params ────────────────────────────────────────────────────────
+  ipcMain.handle('plugins:params', async (_event, payload: { pluginId: string; functionName: string }) => {
     try {
-      const { pluginId, params } = payload;
-      
-      // The update calls DLL
-      const result = await updatePluginParams(pluginId, params);
-      const parsedResult = typeof result === 'string' ? JSON.parse(result) : result;
-      
-      const isSuccess = parsedResult?.success !== false;
-
-      if (!isSuccess) {
-          return {
-              success: false,
-              error: parsedResult?.error || 'DLL reported an error processing parameters'
-          };
-      }
-
-      return {
-        success: true,
-        pluginId,
-        message: 'Parameters applied successfully'
-      };
+      const { pluginId, functionName } = payload;
+      const raw = await getPluginParams(pluginId, functionName);
+      const params = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      return { success: true, pluginId, functionName, params };
     } catch (error: any) {
       return {
         success: false,
-        error: `DLL method threw an exception: ${error.message}`
+        error: `Function '${payload?.functionName}' not found on plugin '${payload?.pluginId}': ${error.message}`
       };
     }
   });
+
+  // ── plugins:execute ───────────────────────────────────────────────────────
+  ipcMain.handle(
+    'plugins:execute',
+    async (_event, payload: { pluginId: string; functionName: string; params: Record<string, unknown> }) => {
+      try {
+        const { pluginId, functionName, params } = payload;
+        const raw = await executePlugin(pluginId, functionName, params ?? {});
+        const result = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        return { success: true, pluginId, functionName, result };
+      } catch (error: any) {
+        return {
+          success: false,
+          error: `DLL method '${payload?.functionName}' threw an exception: ${error.message}`
+        };
+      }
+    }
+  );
 }

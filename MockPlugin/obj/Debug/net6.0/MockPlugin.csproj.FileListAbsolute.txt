@@ -9,3 +9,7 @@ C:\Users\User\code\shell-gems\MockPlugin\obj\Debug\net6.0\MockPlugin.dll
 C:\Users\User\code\shell-gems\MockPlugin\obj\Debug\net6.0\refint\MockPlugin.dll
 C:\Users\User\code\shell-gems\MockPlugin\obj\Debug\net6.0\MockPlugin.pdb
 C:\Users\User\code\shell-gems\MockPlugin\obj\Debug\net6.0\ref\MockPlugin.dll
+C:\Users\User\code\shell-gems\plugins\dlls\MockPlugin.deps.json
+C:\Users\User\code\shell-gems\plugins\dlls\MockPlugin.dll
+C:\Users\User\code\shell-gems\plugins\dlls\MockPlugin.pdb
+C:\Users\User\code\shell-gems\MockPlugin\obj\Debug\net6.0\MockPlugin.sourcelink.json

@@ -1,89 +1,7 @@
 # Progress Tracker
 
 ## Current Status
-✅ **Project Complete**. The Shell-Plugin application is fully built, tested, packaged, and ready for deployment.
-
----
-
-## Completed
-- [x] Project design and architecture defined
-- [x] `CLAUDE.md` created
-- [x] `docs/PRD.md` created
-- [x] `docs/ARCHITECTURE.md` created
-- [x] `docs/API_CONTRACT.md` created
-- [x] `docs/UI.md` created
-- [x] `docs/PROGRESS.md` created
-- [x] `docs/DEPLOYMENT.md` created
-- [x] `docs/README-TECHNICIAN.txt` created
-
----
-
-## Up Next (Suggested Build Order)
-
-### Phase 1 — Project Scaffolding
-Set up the Electron + Angular structure before writing any feature code.
-
-- [x] Initialize root `package.json` with Electron + Electron Builder deps
-- [x] Scaffold Angular app in `/renderer` using Angular CLI (`ng new`)
-- [x] Configure Angular to output into `renderer/dist/` (used by Electron)
-- [x] Create `main/main.ts` — Electron entry point, loads Angular output
-- [x] Create `main/preload.ts` — `contextBridge` exposing `electronAPI.invoke`
-- [x] Verify Electron opens Angular app in a BrowserWindow
-- [x] Configure `scripts/build.js` via `electron-packager` for portable build (no installer)
-- [x] Confirm `plugins/` folder copies into build output
-
-### Phase 2 — Main Process IPC Layer
-Build the DLL loading and IPC handler layer before touching the UI.
-
-- [x] Create `main/ipc/pluginScanner.ts` — scans `plugins/dlls/` on startup
-- [x] Create `main/ipc/pluginLoader.ts` — loads each DLL via `edge-js`
-- [x] Create `main/ipc/handlers.ts` — registers all `ipcMain.handle` channels:
-  - [x] `plugins:list`
-  - [x] `plugins:params`
-  - [x] `plugins:update`
-- [x] Test all 3 channels with a mock/dummy DLL before building UI
-
-### Phase 3 — Angular UI
-Build UI components only after IPC layer is confirmed working.
-
-- [x] Create `plugin.service.ts` — wraps all `window.electronAPI.invoke` calls
-- [x] Create `file.service.ts` — File API + Base64 encoding
-- [x] Build `plugin-grid` component — calls `plugins:list`, renders icon cards
-- [x] Build `plugin-icon` component — card + status dot
-- [x] Build `side-panel` component — animated drawer, overlay
-- [x] Build `dynamic-form` component — renders controls from schema
-- [x] Build `text-control` component
-- [x] Build `number-control` component (with min/max validation)
-- [x] Build `boolean-control` component (toggle switch)
-- [x] Build `range-control` component (slider + live value)
-- [x] Build `file-control` component (Browse + Base64 + size validation)
-- [x] Wire Apply button → `plugins:update` IPC call
-- [x] Add all error states (unresponsive, load failure, update failure, file too large)
-- [x] Apply SCSS styles from `UI.md`
-
-### Phase 4 — Integration & Polish
-- [x] End-to-end test with a real .dll plugin
-- [x] Handle "Bridge not running" equivalent: main process fails to init → show error screen
-- [x] Add skeleton loading animations
-- [x] Add tooltip on red-dot icon cards showing load error message
-- [x] Final portable build test: copy `dist/win-unpacked/` to clean machine and verify
-
-### Phase 5 — Delivery Package Assembly
-Follow `docs/DELIVERY_PACKAGE.md` exactly for this phase.
-
-- [x] Run `npm run build:portable` → confirm `dist/win-unpacked/` output
-- [x] Download `VC_redist.x64.exe` from https://aka.ms/vs/17/release/vc_redist.x64.exe on dev machine
-- [x] Download `dotnet-runtime-installer.exe` (.NET 6.0 x64) from https://dotnet.microsoft.com/en-us/download/dotnet/6.0 — confirm version matches DLL plugins
-- [x] Assemble `Shell-Gems-Delivery/` folder structure as defined in DELIVERY_PACKAGE.md
-- [x] Place all plugin `.dll` files in `Shell-Gems/plugins/dlls/`
-- [x] Place all plugin icon `.png` files in `Shell-Gems/plugins/icons/`
-- [x] Confirm `INSTALL.md` is in root of delivery folder
-- [x] Smoke test the entire delivery folder on dev machine
-- [x] Test on clean Windows 10 VM — no dev tools, no internet
-- [x] Test on clean Windows 11 VM — no dev tools, no internet
-- [x] Verify app works when folder path contains spaces
-- [x] Verify app works after moving delivery folder to a different drive
-- [x] Zip `Shell-Gems-Delivery/` and deliver
+🔄 **Rebuild in progress**. Multi-function plugin support implemented across IPC and UI layers. Final integration testing pending.
 
 ---
 
@@ -100,9 +18,107 @@ Follow `docs/DELIVERY_PACKAGE.md` exactly for this phase.
 | (start) | `edge-js` for DLL interop | Hosts CLR inside Node.js, no separate .NET process |
 | (start) | Target Windows 10 + 11, clean machines | Widest compatibility, assume nothing pre-installed |
 | (start) | Bundle VC++ Redist + .NET 6 Runtime in delivery folder | edge-js requires both on clean machines |
-| (start) | Automate delivery build via batch script | Repeatable, no manual steps, less human error |
+| (redesign) | Multi-function plugin model | Each plugin exposes N named functions, each with own params + JSON result |
+| (redesign) | Reflection dispatch inside DLL | Shell passes functionName; DLL routes via BindingFlags.NonPublic reflection |
+| (redesign) | Result as opaque JSON viewer | Shell never interprets result keys — DLL author owns result shape |
+| (redesign) | `plugins:update` → `plugins:execute` | Rename reflects that functions return output, not just apply settings |
+| (redesign) | New `plugins:functions` IPC channel | Retrieves function manifest from DLL before showing param form |
+| (redesign) | Function selector as tab strip | Compact, scannable, supports 1–many functions |
+| (redesign) | Result viewer region in side panel | Persistent area below form; expands on first Execute |
+
+---
+
+## Phase 1 — Project Scaffolding
+- [x] Initialize root `package.json` with Electron + Electron Builder deps
+- [x] Scaffold Angular app in `/renderer` using Angular CLI
+- [x] Configure Angular to output into `renderer/dist/`
+- [x] Create `main/main.ts`
+- [x] Create `main/preload.ts` with updated channel whitelist:
+      `plugins:list`, `plugins:functions`, `plugins:params`, `plugins:execute`
+- [x] Verify Electron opens Angular app in a BrowserWindow
+- [x] Configure `scripts/build.js` for portable build
+- [x] Confirm `plugins/` folder copies into build output
+
+## Phase 2 — Main Process IPC Layer
+- [x] Create / update `main/ipc/pluginScanner.ts` — scans `plugins/dlls/`
+- [x] Create / update `main/ipc/pluginLoader.ts`:
+  - [x] Load DLL via `edge-js`
+  - [x] Call `DLL.GetFunctions()` → return function manifest
+  - [x] Call `DLL.GetParams({ functionName })` → return param schema
+  - [x] Call `DLL.Execute({ functionName, parameters })` → return result object
+- [x] Create / update `main/ipc/handlers.ts` — register all 4 channels:
+  - [x] `plugins:list`
+  - [x] `plugins:functions`
+  - [x] `plugins:params`
+  - [x] `plugins:execute`
+- [x] Test all 4 channels with a mock DLL that implements GetFunctions, GetParams, Execute
+
+## Phase 3 — Angular UI
+
+### Services
+- [x] Update `plugin.service.ts` — add `getFunctions()` and `execute()` methods,
+      rename `updateParams()` → `execute()`
+- [x] Keep `file.service.ts` unchanged
+
+### Components — existing (update)
+- [x] `plugin-grid` — no change needed
+- [x] `plugin-icon` — no change needed
+- [x] `side-panel` — add regions: function-selector slot, result-viewer slot; increase width to 400px
+- [x] `dynamic-form` — must accept `functionName` input; reset on function change
+
+### Components — new
+- [x] **`function-selector`** component:
+  - [x] Horizontal scrollable tab strip
+  - [x] Active tab highlights in `$accent` blue
+  - [x] Description tooltip on hover
+  - [x] Shimmer loading state
+  - [x] Error + Retry state
+  - [x] Emits `functionSelected` EventEmitter
+- [x] **`result-viewer`** component:
+  - [x] Hidden (height 0) before first result
+  - [x] Expands with `max-height` animation on result arrival
+  - [x] Syntax-highlighted JSON display (using `ngx-json-viewer`)
+  - [x] Copy to clipboard button
+  - [x] Error state (red box, DLL error message)
+  - [x] Loading/spinner state during Execute
+
+### Controls — no change needed
+- [x] `text-control`
+- [x] `number-control`
+- [x] `boolean-control`
+- [x] `range-control`
+- [x] `file-control`
+
+### Wiring
+- [x] Execute button → `plugin.service.execute()` → result → `result-viewer`
+- [x] Function tab change → reload params → reset form → clear result viewer
+- [x] All error states (unresponsive, load failure, execute failure, file too large)
+- [x] Rename "Apply" button label to "Execute"
+
+### SCSS
+- [x] Add `$bg-result: #0a2240` variable
+- [x] Add JSON syntax highlight variables (`$json-key`, `$json-string`, etc.)
+- [x] Style `function-selector` tab strip per UI.md
+- [x] Style `result-viewer` per UI.md
+
+## Phase 4 — Integration & Polish
+- [ ] End-to-end test with a real .dll plugin that has 2+ functions
+- [ ] Test function with no params (empty form — Execute should still work)
+- [ ] Test function that returns a deeply nested JSON object
+- [ ] Test switching functions mid-session (form resets, result clears)
+- [x] Skeleton animations on function selector and form area
+- [ ] Tooltip on red-dot icon cards
+- [ ] Final portable build test on clean machine
+
+## Phase 5 — Delivery Package Assembly
+*(same as before — see DELIVERY_PACKAGE.md)*
+- [ ] `npm run build:portable` → `dist/win-unpacked/`
+- [ ] Assemble `Shell-Gems-Delivery/` folder
+- [ ] Test on clean Windows 10 VM
+- [ ] Test on clean Windows 11 VM
+- [ ] Zip and deliver
 
 ---
 
 ## Known Issues / Blockers
-_None yet — update this section as you work._
+_None — update this section as you work._

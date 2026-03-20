@@ -17,8 +17,8 @@
 .panel {
   position: fixed;
   top: 0;
-  right: -360px;
-  width: 360px;
+  right: -400px;
+  width: 400px;
   height: 100vh;
   background: #0f3460;
   z-index: 101;
@@ -28,7 +28,7 @@
   flex-direction: column;
 
   &.open {
-    transform: translateX(-360px);
+    transform: translateX(-400px);
   }
 }
 
@@ -121,8 +121,9 @@
   padding: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
+  flex-shrink: 0;
 
-  .btn-apply {
+  .btn-execute {
     width: 100%;
     background: #4299e1;
     color: white;
@@ -131,7 +132,14 @@
     padding: 12px;
     border-radius: 8px;
     cursor: pointer;
-    
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 150ms;
+
     &:hover:not([disabled]) {
       background: #3182ce;
     }
@@ -142,26 +150,25 @@
     }
   }
 
+  .btn-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
   .inline-error {
     color: #f44336;
     font-size: 12px;
     margin-bottom: 8px;
     text-align: center;
-  }
-
-  .inline-success {
-    position: absolute;
-    top: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #4caf50;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: bold;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    animation: successFlash 300ms ease;
   }
 }
 

@@ -1,0 +1,96 @@
+.result-viewer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 300ms ease;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  &.visible {
+    max-height: 400px; // generous ceiling; content dictates actual height
+  }
+}
+
+/* ── Toolbar ──────────────────────────────────────────────────────────── */
+.result-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px 8px;
+}
+
+.result-label {
+  font-size: 11px;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.tb-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #a0aec0;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: background 150ms, color 150ms;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: white;
+  }
+}
+
+.copy-btn {
+  min-width: 82px;
+}
+
+/* ── JSON tree area ───────────────────────────────────────────────────── */
+.result-tree {
+  background: #0a2240;
+  border-radius: 8px;
+  margin: 0 20px 12px;
+  padding: 12px;
+  overflow-y: auto;
+  max-height: 260px;
+}
+
+/* ── Loading ──────────────────────────────────────────────────────────── */
+.result-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 80px;
+  color: #a0aec0;
+  font-size: 12px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #4299e1;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Error ────────────────────────────────────────────────────────────── */
+.result-error {
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  color: #f44336;
+  font-size: 12px;
+  padding: 12px 16px;
+  margin: 0 20px 12px;
+  border-radius: 6px;
+}

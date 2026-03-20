@@ -1,11 +1,19 @@
 import { Injectable } from '@angular/core';
 
+// ── Data models ───────────────────────────────────────────────────────────────
+
 export interface PluginInfo {
   id: string;
   name: string;
   iconPath: string;
   status: 'active' | 'error' | 'pending';
   error?: string;
+}
+
+export interface PluginFunction {
+  name: string;        // exact method name used for reflection dispatch
+  label: string;       // human-readable tab label
+  description: string; // tooltip text
 }
 
 export interface PluginParam {
@@ -22,22 +30,37 @@ export interface PluginParam {
   maxSizeKb?: number;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+// ── Service ───────────────────────────────────────────────────────────────────
+
+@Injectable({ providedIn: 'root' })
 export class PluginService {
 
-  constructor() { }
-
+  /** Returns all plugins found in plugins/dlls/ */
   async listPlugins(): Promise<{ success: boolean; plugins: PluginInfo[]; error?: string }> {
     return (window as any).electronAPI.invoke('plugins:list');
   }
 
-  async getParams(pluginId: string): Promise<{ success: boolean; pluginId: string; params: PluginParam[]; error?: string }> {
-    return (window as any).electronAPI.invoke('plugins:params', { pluginId });
+  /** Returns the list of functions exposed by a plugin */
+  async getFunctions(
+    pluginId: string
+  ): Promise<{ success: boolean; pluginId: string; functions: PluginFunction[]; error?: string }> {
+    return (window as any).electronAPI.invoke('plugins:functions', { pluginId });
   }
 
-  async updateParams(pluginId: string, params: any): Promise<{ success: boolean; pluginId: string; message?: string; error?: string }> {
-    return (window as any).electronAPI.invoke('plugins:update', { pluginId, params });
+  /** Returns the parameter schema for a specific function */
+  async getParams(
+    pluginId: string,
+    functionName: string
+  ): Promise<{ success: boolean; pluginId: string; functionName: string; params: PluginParam[]; error?: string }> {
+    return (window as any).electronAPI.invoke('plugins:params', { pluginId, functionName });
+  }
+
+  /** Executes a named function and returns the JSON result object */
+  async execute(
+    pluginId: string,
+    functionName: string,
+    params: Record<string, unknown>
+  ): Promise<{ success: boolean; pluginId: string; functionName: string; result?: any; error?: string }> {
+    return (window as any).electronAPI.invoke('plugins:execute', { pluginId, functionName, params });
   }
 }
