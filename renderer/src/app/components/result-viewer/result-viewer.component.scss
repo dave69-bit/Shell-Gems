@@ -58,6 +58,50 @@
   padding: 12px;
   overflow-y: auto;
   max-height: 260px;
+  font-family: 'Inter', monospace;
+  font-size: 13px;
+
+  /* JSON node rows */
+  :host ::ng-deep {
+    .json-row {
+      display: flex;
+      align-items: center;
+      height: 26px;
+      cursor: default;
+      border-radius: 4px;
+      padding-right: 8px;
+      white-space: nowrap;
+
+      &:hover { background: rgba(255, 255, 255, 0.04); }
+    }
+
+    .indent { display: inline-block; flex-shrink: 0; }
+
+    .chevron {
+      color: #4299e1;
+      font-size: 10px;
+      width: 14px;
+      flex-shrink: 0;
+      display: inline-block;
+      transition: transform 150ms;
+      cursor: pointer;
+
+      &.expanded { transform: rotate(90deg); }
+    }
+
+    .chevron-placeholder { width: 14px; flex-shrink: 0; display: inline-block; }
+
+    .json-key   { color: #a0aec0; }
+    .json-sep   { color: #4a5568; }
+    .json-summary { color: #4a5568; font-style: italic; }
+
+    .json-val {
+      &.string  { color: #68d391; }
+      &.number  { color: #f6ad55; }
+      &.boolean { color: #76e4f7; }
+      &.null    { color: #fc8181; }
+    }
+  }
 }
 
 /* ── Loading ──────────────────────────────────────────────────────────── */
