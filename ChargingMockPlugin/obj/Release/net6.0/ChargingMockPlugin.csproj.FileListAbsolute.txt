@@ -1,7 +1,6 @@
 C:\Users\User\code\shell-gems\ChargingMockPlugin\bin\Release\net6.0\ChargingMockPlugin.deps.json
 C:\Users\User\code\shell-gems\ChargingMockPlugin\bin\Release\net6.0\ChargingMockPlugin.dll
 C:\Users\User\code\shell-gems\ChargingMockPlugin\bin\Release\net6.0\ChargingMockPlugin.pdb
-C:\Users\User\code\shell-gems\ChargingMockPlugin\obj\Release\net6.0\ChargingMockPlugin.csproj.AssemblyReference.cache
 C:\Users\User\code\shell-gems\ChargingMockPlugin\obj\Release\net6.0\ChargingMockPlugin.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\User\code\shell-gems\ChargingMockPlugin\obj\Release\net6.0\ChargingMockPlugin.AssemblyInfoInputs.cache
 C:\Users\User\code\shell-gems\ChargingMockPlugin\obj\Release\net6.0\ChargingMockPlugin.AssemblyInfo.cs
