@@ -6,15 +6,15 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v6.0": {
-      "ChargingMockPlugin/1.0.0": {
+      "charging-plugin/1.0.0": {
         "runtime": {
-          "ChargingMockPlugin.dll": {}
+          "charging-plugin.dll": {}
         }
       }
     }
   },
   "libraries": {
-    "ChargingMockPlugin/1.0.0": {
+    "charging-plugin/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

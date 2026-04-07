@@ -8,7 +8,7 @@
       "version": "1.0.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\User\\code\\shell-gems\\ChargingMockPlugin\\ChargingMockPlugin.csproj",
-        "projectName": "ChargingMockPlugin",
+        "projectName": "charging-plugin",
         "projectPath": "C:\\Users\\User\\code\\shell-gems\\ChargingMockPlugin\\ChargingMockPlugin.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\User\\code\\shell-gems\\ChargingMockPlugin\\obj\\",
