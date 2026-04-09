@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron';
 import { scanPlugins } from './pluginScanner';
 import { getPluginFunctions, getPluginParams, executePlugin } from './pluginLoader';
+import { logError } from '../logger';
 
 export function registerIpcHandlers() {
 
@@ -17,11 +18,13 @@ export function registerIpcHandlers() {
         } catch (e: any) {
           p.status = 'error';
           p.error  = e.message || 'Failed to initialize plugin';
+          // Note: pluginLoader already logs the specific initialization errors
         }
       }
 
       return { success: true, plugins };
     } catch (error: any) {
+      logError('Error scanning plugins directory', error);
       return { success: false, error: error.message || 'Could not scan plugins directory' };
     }
   });
@@ -34,6 +37,7 @@ export function registerIpcHandlers() {
       const functions = typeof raw === 'string' ? JSON.parse(raw) : raw;
       return { success: true, pluginId, functions };
     } catch (error: any) {
+      logError(`Error in plugins:functions for pluginId: ${payload?.pluginId}`, error);
       return {
         success: false,
         error: `Plugin '${payload?.pluginId}' could not be loaded: ${error.message}`
@@ -49,6 +53,7 @@ export function registerIpcHandlers() {
       const params = typeof raw === 'string' ? JSON.parse(raw) : raw;
       return { success: true, pluginId, functionName, params };
     } catch (error: any) {
+      logError(`Error in plugins:params for pluginId: ${payload?.pluginId}, functionName: ${payload?.functionName}`, error);
       return {
         success: false,
         error: `Function '${payload?.functionName}' not found on plugin '${payload?.pluginId}': ${error.message}`
@@ -66,6 +71,7 @@ export function registerIpcHandlers() {
         const result = typeof raw === 'string' ? JSON.parse(raw) : raw;
         return { success: true, pluginId, functionName, result };
       } catch (error: any) {
+        logError(`Error in plugins:execute for pluginId: ${payload?.pluginId}, functionName: ${payload?.functionName}`, error);
         return {
           success: false,
           error: `DLL method '${payload?.functionName}' threw an exception: ${error.message}`

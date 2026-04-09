@@ -5,6 +5,8 @@ import * as fs from 'fs';
 process.env.EDGE_USE_CORECLR = '1';
 import * as edge from 'electron-edge-js';
 
+import { logError } from '../logger';
+
 // Each cached plugin entry holds three edge-js bound methods
 interface PluginMethods {
   getFunctions: ((payload: any, cb: (err: any, res: any) => void) => void) | null;
@@ -29,7 +31,9 @@ function getTypeName(pluginId: string): string {
 async function loadMethod(pluginId: string, methodName: string): Promise<any> {
   const dllPath = getDllPath(pluginId);
   if (!fs.existsSync(dllPath)) {
-    throw new Error(`DLL for plugin '${pluginId}' not found at ${dllPath}`);
+    const errObj = new Error(`DLL for plugin '${pluginId}' not found at ${dllPath}`);
+    logError(`Missing DLL Error`, errObj);
+    throw errObj;
   }
   try {
     return edge.func({
@@ -38,7 +42,13 @@ async function loadMethod(pluginId: string, methodName: string): Promise<any> {
       methodName:   methodName
     });
   } catch (e: any) {
-    throw new Error(`Failed to load method '${methodName}' from ${pluginId}.dll: ${e.message}`);
+    let errorMessage = e.message || 'Unknown error';
+    if (errorMessage.includes('edge.initializeClrFunc is not a function')) {
+      errorMessage += '\n\n[MISSING PREREQUISITES ERROR]: The required .NET Framework or .NET Core runtime was not found on this machine. Please install the correct .NET runtime to allow plugins to load.';
+    }
+    const robustError = `Failed to load method '${methodName}' from ${pluginId}.dll: ${errorMessage}`;
+    logError(`[LoadMethod Error] pluginId: ${pluginId}, methodName: ${methodName}`, robustError);
+    throw new Error(robustError);
   }
 }
 
