@@ -13,5 +13,6 @@ renderer/.angular/
 bin/
 obj/
 *.zip
+!Products/*.zip
 Shell-Gems-Portable/
 Shell-Gems-Portable (2).zip
