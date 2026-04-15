@@ -15,7 +15,7 @@
     "version": "1.0.0",
     "restore": {
       "projectUniqueName": "C:\\Users\\User\\code\\shell-gems\\MockPlugin\\MockPlugin.csproj",
-      "projectName": "MockPlugin",
+      "projectName": "mock-plugin",
       "projectPath": "C:\\Users\\User\\code\\shell-gems\\MockPlugin\\MockPlugin.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\User\\code\\shell-gems\\MockPlugin\\obj\\",

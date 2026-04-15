@@ -3,7 +3,7 @@ import { app } from 'electron';
 import * as fs from 'fs';
 
 process.env.EDGE_USE_CORECLR = '1';
-import * as edge from 'electron-edge-js';
+const edge = require('electron-edge-js');
 
 import { logError } from '../logger';
 
@@ -20,7 +20,7 @@ function getDllPath(pluginId: string): string {
   if (app.isPackaged) {
     return path.join(path.dirname(app.getPath('exe')), 'plugins', 'dlls', `${pluginId}.dll`);
   }
-  return path.join(app.getAppPath(), '../../plugins', 'dlls', `${pluginId}.dll`);
+  return path.join(app.getAppPath(), 'plugins', 'dlls', `${pluginId}.dll`);
 }
 
 function getTypeName(pluginId: string): string {

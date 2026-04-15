@@ -11,7 +11,7 @@ export interface PluginInfo {
 }
 
 export function scanPlugins(): PluginInfo[] {
-  let pluginsDir = path.join(app.getAppPath(), '../../plugins');
+  let pluginsDir = path.join(app.getAppPath(), 'plugins');
   if (app.isPackaged) {
     pluginsDir = path.join(path.dirname(app.getPath('exe')), 'plugins');
   }

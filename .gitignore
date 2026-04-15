@@ -10,3 +10,8 @@ renderer/dist/
 renderer/.angular/
 .run/
 .gemini/
+bin/
+obj/
+*.zip
+Shell-Gems-Portable/
+Shell-Gems-Portable (2).zip

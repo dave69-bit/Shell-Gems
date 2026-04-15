@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("charging-plugin")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ecd0c61a4717706af83b445f1645d920ee3a2174")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fc756dd1c298f7c36af5c59a07e7c8f2280adc20")]
 [assembly: System.Reflection.AssemblyProductAttribute("charging-plugin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("charging-plugin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

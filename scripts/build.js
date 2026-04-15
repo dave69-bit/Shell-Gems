@@ -17,23 +17,45 @@ async function bundle() {
     overwrite: true,
     asar: false, // Turn off asar if we want to mimic the previous raw output exactly, or leave it off so edge-js does not crash inside asar. Actually, electron-edge-js has trouble in asar sometimes, so "asar: false" is safer or requires unpacking native modules.
     ignore: (file) => {
-       const relativePath = path.relative(rootDir, file).replace(/\\/g, '/');
-       if (!relativePath) return false;
+       const normalizedFile = file.replace(/\\/g, '/');
        
+       // High priority: Keep essential app files and their parent directories
+       const essentials = [
+           '/dist/main',
+           '/renderer/dist',
+           '/node_modules',
+           '/package.json'
+       ];
+       const parents = [
+           '/renderer',
+           '/dist'
+       ];
+
+       if (essentials.some(p => normalizedFile.includes(p)) || 
+           parents.some(p => normalizedFile.endsWith(p))) {
+           return false;
+       }
+
        const ignores = [
-           /^renderer\/(?!dist\/renderer\/browser)/,
-           /^MockPlugin/,
-           /^docs/,
-           /^scripts/,
-           /^\.git/,
-           /^Shell-Gems-Delivery($|\/)/,
-           /^Shell-Gems-Delivery\.zip$/,
-           /^test-wrapper\.js/,
-           /^tsconfig\.json/,
-           /^\.vscode/
+           /MockPlugin($|\/)/,
+           /ChargingMockPlugin($|\/)/,
+           /docs($|\/)/,
+           /scripts($|\/)/,
+           /\.git($|\/)/,
+           /Shell-Gems-Delivery($|\/)/,
+           /Shell-Gems-Delivery\.zip$/,
+           /Shell-Gems-Portable($|\/)/,
+           /Shell-Gems-Portable.*\.zip$/,
+           /test-wrapper\.js/,
+           /tsconfig\.json/,
+           /\.vscode($|\/)/,
+           /package-lock\.json/,
+           /CLAUDE\.md/,
+           /renderer\//,
+           /plugins($|\/)/
        ];
        
-       return ignores.some(regex => regex.test(relativePath));
+       return ignores.some(regex => regex.test(normalizedFile));
     }
   });
 
